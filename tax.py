@@ -3,6 +3,9 @@ import textract
 import re
 import sys
 from pathlib import Path
+import webbrowser
+
+
 
 # TODO get argv command line argument for filepath
 stuff = sys.argv
@@ -53,7 +56,7 @@ filey.close
 
 # create list of integers for summing, bit of cleaning first
 # this is a list comprehension
-num_list = [ int(x.strip()) for x in content]
+num_list = [ int(x.strip()) for x in content ]
 total = sum(num_list)
 
 # opening a file and then appending the total to it
@@ -62,3 +65,4 @@ file2 = open('save.txt', 'a')
 file2.write(f'\n\ntotal: {total}')
 
 print(f'check {str(os.getcwd())} to see your save file with values and a total')
+webbrowser.open(f'file:///{str(os.getcwd())}')
