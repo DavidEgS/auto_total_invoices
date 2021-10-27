@@ -2,14 +2,21 @@ import os
 import textract
 import re
 import sys
+from pathlib import Path
 
 # TODO get argv command line argument for filepath
 stuff = sys.argv
 if len(stuff) > 1:
-  print(stuff[1])
+  subFolder = Path(*stuff[1:])
 
+  homeFolder = str(Path.home())
+  ting = homeFolder / subFolder
+  # print(str(ting))
 # set directory for this page
-os.chdir('.')
+if ting:
+  os.chdir(ting)
+else:
+  os.chdir('.')
 # clear out text file with nums and total
 if os.path.exists("save.txt"):
   os.remove("save.txt")
@@ -53,5 +60,5 @@ total = sum(num_list)
 file2 = open('save.txt', 'a')
 # writing a string with interpolation to the txt file
 file2.write(f'\n\ntotal: {total}')
-# extract_total('INV-1.pdf')
-# extract_total('INV-13.pdf')
+
+print(f'check {str(os.getcwd())} to see your save file with values and a total')
