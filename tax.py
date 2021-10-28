@@ -1,21 +1,20 @@
-import os
-import textract
-import re
-import sys
+import os, textract, re, sys, webbrowser
 from pathlib import Path
-import webbrowser
 
 
 
-# TODO get argv command line argument for filepath
+#  get argv command line argument for filepath
 stuff = sys.argv
+# guard clause for if no path is given
 if len(stuff) > 1:
+  # extract the arguments after script name
+  # and turn them to a path for whichever os
   subFolder = Path(*stuff[1:])
-
+  # get home folder then concatenate that and the path given
   homeFolder = str(Path.home())
   ting = homeFolder / subFolder
   # print(str(ting))
-# set directory for this page
+# set directory eithe rogevn argument or for directory with script in
 if ting:
   os.chdir(ting)
 else:
