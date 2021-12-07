@@ -1,28 +1,6 @@
 import os, textract, re, sys, webbrowser
 from pathlib import Path
 
-
-
-#  get argv command line argument for filepath
-stuff = sys.argv
-# guard clause for if no path is given
-if len(stuff) > 1:
-  # extract the arguments after script name
-  # and turn them to a path for whichever os
-  subFolder = Path(*stuff[1:])
-  # get home folder then concatenate that and the path given
-  homeFolder = str(Path.home())
-  ting = homeFolder / subFolder
-  # print(str(ting))
-# set directory eithe rogevn argument or for directory with script in
-if ting:
-  os.chdir(ting)
-else:
-  os.chdir('.')
-# clear out text file with nums and total
-if os.path.exists("save.txt"):
-  os.remove("save.txt")
-
 # function to operate on each file
 # extract the total and append to txt file
 def extract_total(filename):
@@ -32,36 +10,48 @@ def extract_total(filename):
   op_text = text.decode('utf-8')
   # regex is applied and group 1 should contain the number
   mo = invTotalRegEx.search(op_text)
-  #print(mo.group(1))
-  payment = mo.group(1).replace(',', '')
-  #payment = payment.replace(',', '')
-  # print(payment)
-  # add value to file for totalling
-  saver = open('save.txt', 'a')
-  saver.write(f'{payment}\n')
+
+  return mo.group(1).replace(',', '')
+
+def invoiceTotaller():
+  #  get argv command line argument for filepath
+  cmd_args = sys.argv
+  # guard clause for if no path is given
+  if len(cmd_args) > 1:
+    # extract the arguments after script name
+    # and turn them to a path for whichever os
+    subFolder = Path(*cmd_args[1:])
+    # get home folder then concatenate that and the path given
+    homeFolder = str(Path.home())
+    # concat folder path and home then chdir for script operation
+    filePath = homeFolder / subFolder
+    os.chdir(filePath)
+
+  # else:
+  #   os.chdir('.')
+  # clear out text file with nums and total
+  if os.path.exists("save.txt"):
+    os.remove("save.txt")
+  invoiceValues = []
+  # loop through directory inspecting all files
+  for filename in os.listdir('.'):
+    if filename.endswith(".pdf"):
+      invoiceValues.append(int(extract_total(filename)))
+
+  # print(invoiceValues)
+
+  # script for totalling the file
+
+  # opening a file and then appending the total to it
+  file = open('save.txt', 'a')
+  for x in invoiceValues:
+    file.write(f'{x}\n')
+  # writing a string with interpolation to the txt file
+  file.write(f'\n\ntotal: {sum(invoiceValues)}')
+
+  print(f'check {str(os.getcwd())} to see your save file with values and a total')
+  webbrowser.open(f'file:///{str(os.getcwd())}')
 
 
-# loop through directory inspecting all files
-for filename in os.listdir('.'):
-  if filename.endswith(".pdf"):
-    extract_total(filename)
-
-
-# script for totalling the file
-filey = open('save.txt')
-content = filey.readlines()
-filey.close
-
-
-# create list of integers for summing, bit of cleaning first
-# this is a list comprehension
-num_list = [ int(x.strip()) for x in content ]
-total = sum(num_list)
-
-# opening a file and then appending the total to it
-file2 = open('save.txt', 'a')
-# writing a string with interpolation to the txt file
-file2.write(f'\n\ntotal: {total}')
-
-print(f'check {str(os.getcwd())} to see your save file with values and a total')
-webbrowser.open(f'file:///{str(os.getcwd())}')
+if __name__ == "__main__":
+  invoiceTotaller()
