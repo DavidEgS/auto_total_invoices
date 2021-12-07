@@ -18,27 +18,22 @@ def invoiceTotaller():
   cmd_args = sys.argv
   # guard clause for if no path is given
   if len(cmd_args) > 1:
-    # extract the arguments after script name
-    # and turn them to a path for whichever os
+    # extract the arguments after script name and turn them to a path for whichever os
     subFolder = Path(*cmd_args[1:])
-    # get home folder then concatenate that and the path given
+    # get home folder then concatenate with path given to chage dir of script operation
     homeFolder = str(Path.home())
-    # concat folder path and home then chdir for script operation
     filePath = homeFolder / subFolder
     os.chdir(filePath)
 
-  # else:
-  #   os.chdir('.')
   # clear out text file with nums and total
   if os.path.exists("save.txt"):
     os.remove("save.txt")
+ # initialise array for values
   invoiceValues = []
   # loop through directory inspecting all files
   for filename in os.listdir('.'):
     if filename.endswith(".pdf"):
       invoiceValues.append(int(extract_total(filename)))
-
-  # print(invoiceValues)
 
   # script for totalling the file
 
